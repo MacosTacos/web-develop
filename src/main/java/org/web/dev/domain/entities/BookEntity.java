@@ -1,6 +1,9 @@
 package org.web.dev.domain.entities;
 
 import jakarta.persistence.*;
+import org.web.dev.exceptions.book.BookRemovalException;
+import org.web.dev.exceptions.book.InvalidNumberException;
+import org.web.dev.exceptions.book.NameIsNullException;
 
 import java.util.List;
 
@@ -9,8 +12,11 @@ import java.util.List;
 public class BookEntity extends BaseEntity {
 
     private String name;
-    private String publicationYear;
+    private Integer publicationYear;
     private String description;
+    private boolean isDeleted;
+    private int quantity;
+    private Double price;
     private List<GenreEntity> genreEntities;
     private List<AuthorEntity> authorEntities;
     private List<OrderContentEntity> orderContentEntities;
@@ -18,29 +24,38 @@ public class BookEntity extends BaseEntity {
     protected BookEntity() {
     }
 
-    public BookEntity(String name, String publicationYear, String description, List<GenreEntity> genreEntities, List<AuthorEntity> authorEntities) {
+    public BookEntity(String name, Integer publicationYear, Double price, List<GenreEntity> genreEntities, List<AuthorEntity> authorEntities) {
         this.name = name;
         this.publicationYear = publicationYear;
-        this.description = description;
+        this.price = price;
         this.genreEntities = genreEntities;
         this.authorEntities = authorEntities;
     }
 
-    public String getName() {
-        return name;
+    public void setOrderContentEntities(List<OrderContentEntity> orderContentEntities) {
+        this.orderContentEntities = orderContentEntities;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    @Column(name = "publication_year")
-    public String getPublicationYear() {
-        return publicationYear;
+    public void setPublicationYear(Integer publicationYear) {
+        this.publicationYear = publicationYear;
     }
 
-    public void setPublicationYear(String publicationYear) {
-        this.publicationYear = publicationYear;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    @Column(name = "name", nullable = false)
+    public String getName() {
+        return name;
+    }
+
+    @Column(name = "publication_year", nullable = false)
+    public Integer getPublicationYear() {
+        return publicationYear;
     }
 
     public String getDescription() {
@@ -49,6 +64,20 @@ public class BookEntity extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Column(name = "id_deleted")
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        if (!deleted) {
+            isDeleted = true;
+        } else {
+            throw new BookRemovalException("Book is deleted");
+        }
+
     }
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -76,7 +105,28 @@ public class BookEntity extends BaseEntity {
         return orderContentEntities;
     }
 
-    public void setOrderContentEntities(List<OrderContentEntity> orderContentEntities) {
-        this.orderContentEntities = orderContentEntities;
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void addQuantity(int quantity) {
+        if (quantity >= 0) {
+            this.quantity += quantity;
+        } else {
+            throw new InvalidNumberException("quantity can not be less than 0");
+        }
+    }
+
+    @Column(name = "price", nullable = false)
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        if (price >= 0) {
+            this.price = price;
+        } else {
+            throw new InvalidNumberException("price can not be less than 0");
+        }
     }
 }
