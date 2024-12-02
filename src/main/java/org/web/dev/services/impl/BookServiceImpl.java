@@ -34,7 +34,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public ResponseEntity<BookDTO> createBook(BookDTO bookDTO) {
+    public void createBook(BookDTO bookDTO) {
         BookEntity bookEntity = modelMapper.map(bookDTO, BookEntity.class);
         List<Long> ids = new ArrayList<>();
         for (GenreDTO genreDTO : bookDTO.getGenreDTOS()) {
@@ -46,19 +46,24 @@ public class BookServiceImpl implements BookService {
             ids.add(authorDTO.getId());
         }
         bookEntity.setAuthorEntities(authorRepository.findAllById(ids));
-        BookEntity savedBookEntity = bookRepository.save(bookEntity);
-        BookDTO savedBookDTO = modelMapper.map(savedBookEntity, BookDTO.class);
-        ResponseEntity<BookDTO> responseEntity = ResponseEntity.ok().body(savedBookDTO);
-        return responseEntity;
+        bookRepository.save(bookEntity);
     }
 
     @Override
-    public ResponseEntity<BookDTO> findById(Long id) {
+    public BookDTO findById(Long id) {
         BookEntity bookEntity = bookRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Book with id " + id + "not found"));
         BookDTO bookDTO = modelMapper.map(bookEntity, BookDTO.class);
-        ResponseEntity<BookDTO> responseEntity = ResponseEntity.ok().body(bookDTO);
-        return responseEntity;
+        return bookDTO;
+    }
+
+    @Override
+    public List<BookDTO> findAll() {
+        List<BookEntity> bookEntities = bookRepository.findAll();
+        List<BookDTO> bookDTOS = bookEntities.stream()
+                .map(bookEntity -> modelMapper.map(bookEntity, BookDTO.class))
+                .toList();
+        return bookDTOS;
     }
 
     @Override

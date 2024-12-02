@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="header">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <div class="d-flex">
+                <a class="navbar-brand" th:href="@{/genres}">Жанры</a>
+                <a class="navbar-brand" th:href="@{/authors}">Авторы</a>
+            </div>
+        </div>
+    </nav>
+</header>
+</body>
+</html>
