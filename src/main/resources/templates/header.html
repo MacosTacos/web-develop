@@ -2,11 +2,30 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <header th:fragment="header">
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+         class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <div class="d-flex">
                 <a class="navbar-brand" th:href="@{/genres}">Жанры</a>
                 <a class="navbar-brand" th:href="@{/authors}">Авторы</a>
+                <a class="navbar-brand" th:href="@{/books}">Книги</a>
+            </div>
+            <div class="d-flex gap-3">
+                <div>
+                    <form th:action="@{/users/logout}" method="post" sec:authorize="isAuthenticated()">
+                        <button class="btn btn-primary btn-sm" type="submit"> Выйти</button>
+                    </form>
+                    <form th:action="@{/users/login}" method="get" sec:authorize="!isAuthenticated()">
+                        <button class="btn btn-primary btn-sm" type="submit">Войти</button>
+                    </form>
+                </div>
+
+                <div>
+                    <form th:action="@{/users/register}" method="get" sec:authorize="!isAuthenticated() ">
+                        <button class="btn btn-primary btn-sm" type="submit">Регистрация</button>
+                    </form>
+                </div>
+
             </div>
         </div>
     </nav>

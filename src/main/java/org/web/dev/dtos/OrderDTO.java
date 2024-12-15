@@ -1,8 +1,6 @@
 package org.web.dev.dtos;
 
-import org.web.dev.domain.OrderStatus;
-import org.web.dev.domain.entities.OrderContentEntity;
-import org.web.dev.domain.entities.UserEntity;
+import org.web.dev.domain.enums.OrderStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;

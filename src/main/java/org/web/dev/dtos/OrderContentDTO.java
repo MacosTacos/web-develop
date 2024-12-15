@@ -9,6 +9,11 @@ public class OrderContentDTO {
     public OrderContentDTO() {
     }
 
+    public OrderContentDTO(BookDTO bookDTO, Integer quantity) {
+        this.bookDTO = bookDTO;
+        this.quantity = quantity;
+    }
+
     public Long getId() {
         return id;
     }

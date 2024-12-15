@@ -1,12 +1,10 @@
 package org.web.dev.services.impl;
 
-import jakarta.persistence.PersistenceException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.web.dev.domain.OrderStatus;
+import org.web.dev.domain.enums.OrderStatus;
 import org.web.dev.domain.entities.BookEntity;
 import org.web.dev.domain.entities.OrderEntity;
 import org.web.dev.domain.entities.UserEntity;
@@ -19,6 +17,7 @@ import org.web.dev.repositories.OrderRepository;
 import org.web.dev.repositories.UserRepository;
 import org.web.dev.services.OrderService;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,30 +27,32 @@ public class OrderServiceImpl implements OrderService {
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
+    private final CartService cartService;
 
     @Autowired
-    public OrderServiceImpl(OrderRepository orderRepository, ModelMapper modelMapper, UserRepository userRepository, BookRepository bookRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, ModelMapper modelMapper, UserRepository userRepository, BookRepository bookRepository, CartService cartService) {
         this.orderRepository = orderRepository;
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
+        this.cartService = cartService;
     }
 
     @Override
-    public ResponseEntity<OrderDTO> createOrder(OrderDTO orderDTO) {
-        UserEntity userEntity = userRepository.findById(orderDTO.getUserDTO().getId())
+    public void createOrder(Principal principal) {
+        String name = principal.getName();
+        List<OrderContentDTO> orderContentDTOS = cartService.getCart(name);
+        UserEntity userEntity = userRepository.findByName(name)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         OrderEntity orderEntity = new OrderEntity(userEntity);
-        for (OrderContentDTO orderContentDTO : orderDTO.getOrderContentDTOS()) {
+        for (OrderContentDTO orderContentDTO : orderContentDTOS) {
             Long bookId = orderContentDTO.getBookDTO().getId();
             BookEntity bookEntity = bookRepository.findById(bookId)
                     .orElseThrow(() -> new ResourceNotFoundException("Book item with id " + bookId + " not found"));
             orderEntity.setOrderContent(bookEntity, orderContentDTO.getQuantity());
         }
-        OrderEntity savedOrderEntity = orderRepository.save(orderEntity);
-        OrderDTO savedOrderDTO = convert(savedOrderEntity);
-        ResponseEntity<OrderDTO> responseEntity = ResponseEntity.ok().body(savedOrderDTO);
-        return responseEntity;
+        orderRepository.save(orderEntity);
+        cartService.clearCart(name);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package org.web.dev.domain;
+package org.web.dev.domain.enums;
 
 public enum OrderStatus {
     CREATED,

@@ -8,15 +8,25 @@ import java.util.List;
 @Table(name = "users")
 public class UserEntity extends BaseEntity {
     private String name;
-    private String surname;
+    private String email;
+    private String password;
+    private List<RoleEntity> roles;
     private List<OrderEntity> orderEntities;
 
     protected UserEntity() {
     }
 
-    public UserEntity(String name, String surname) {
+    public UserEntity(String name, String email, String password) {
         this.name = name;
-        this.surname = surname;
+        this.email = email;
+        this.password = password;
+    }
+
+    public UserEntity(String name, String email, String password, List<RoleEntity> roles) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
     }
 
     public String getName() {
@@ -27,12 +37,29 @@ public class UserEntity extends BaseEntity {
         this.name = name;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getEmail() {
+        return email;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setEmail(String login) {
+        this.email = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    public List<RoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<RoleEntity> roles) {
+        this.roles = roles;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @OneToMany(mappedBy = "userEntity",fetch = FetchType.LAZY)

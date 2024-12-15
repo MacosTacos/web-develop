@@ -30,6 +30,7 @@ public class BookEntity extends BaseEntity {
         this.price = price;
         this.genreEntities = genreEntities;
         this.authorEntities = authorEntities;
+        this.isDeleted = false;
     }
 
     public void setOrderContentEntities(List<OrderContentEntity> orderContentEntities) {
@@ -72,15 +73,10 @@ public class BookEntity extends BaseEntity {
     }
 
     public void setDeleted(boolean deleted) {
-        if (!deleted) {
-            isDeleted = true;
-        } else {
-            throw new BookRemovalException("Book is deleted");
-        }
-
+        isDeleted = deleted;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "books_genres", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "genre_id"))
     public List<GenreEntity> getGenreEntities() {
         return genreEntities;
@@ -90,7 +86,7 @@ public class BookEntity extends BaseEntity {
         this.genreEntities = genreEntities;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "books_authors", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "author_id"))
     public List<AuthorEntity> getAuthorEntities() {
         return authorEntities;

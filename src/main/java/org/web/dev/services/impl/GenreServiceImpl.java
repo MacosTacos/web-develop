@@ -2,27 +2,28 @@ package org.web.dev.services.impl;
 
 import org.example.dtos.genres.CreateGenreForm;
 import org.example.dtos.genres.UpdateGenreForm;
-import org.example.input.GenreCreateInputModel;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.web.dev.domain.entities.GenreEntity;
 import org.web.dev.dtos.GenreDTO;
 import org.web.dev.exceptions.ResourceNotFoundException;
 import org.web.dev.repositories.GenreRepository;
+import org.web.dev.services.GenreService;
 
 import java.util.List;
 
 @Service
-public class GenreService {
+public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepository;
     private final ModelMapper modelMapper;
 
-    public GenreService(GenreRepository genreRepository, ModelMapper modelMapper) {
+    public GenreServiceImpl(GenreRepository genreRepository, ModelMapper modelMapper) {
         this.genreRepository = genreRepository;
         this.modelMapper = modelMapper;
     }
 
+    @Override
     public void createGenre(CreateGenreForm createGenreForm) {
         if (createGenreForm != null && createGenreForm.name() != null) {
             GenreEntity genreEntity = new GenreEntity(createGenreForm.name());
@@ -30,6 +31,7 @@ public class GenreService {
         }
     }
 
+    @Override
     public GenreDTO getGenre(Long id) {
         GenreEntity genreEntity = genreRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("genre with id " + id + " not found"));
@@ -37,6 +39,7 @@ public class GenreService {
         return genreDTO;
     }
 
+    @Override
     public List<GenreDTO> getAll() {
         List<GenreEntity> genreEntities = genreRepository.findAll();
         List<GenreDTO> genreDTOs = genreEntities.stream().map(
@@ -45,6 +48,7 @@ public class GenreService {
         return genreDTOs;
     }
 
+    @Override
     public void update(UpdateGenreForm updateGenreForm) {
         GenreEntity genreEntity = genreRepository.findById(updateGenreForm.id())
                 .orElseThrow(() -> new ResourceNotFoundException("genre with id " + updateGenreForm.id() + " not found"));

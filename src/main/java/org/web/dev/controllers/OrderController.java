@@ -2,12 +2,15 @@ package org.web.dev.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.web.dev.domain.OrderStatus;
+import org.web.dev.domain.enums.OrderStatus;
 import org.web.dev.dtos.OrderDTO;
 import org.web.dev.services.OrderService;
 
-@RestController
+import java.security.Principal;
+
+@Controller
 @RequestMapping(path = "/orders")
 public class OrderController {
     private final OrderService orderService;
@@ -18,10 +21,9 @@ public class OrderController {
     }
 
     @PostMapping(path = "/create")
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) {
-        ResponseEntity<OrderDTO> responseEntity;
-        responseEntity = orderService.createOrder(orderDTO);
-        return responseEntity;
+    public String createOrder(Principal principal) {
+        orderService.createOrder(principal);
+        return "main/order-created-page.html";
     }
 
     @GetMapping(path = "get/{id}")

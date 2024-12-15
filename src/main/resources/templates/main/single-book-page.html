@@ -1,0 +1,42 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${book.name}">Детали книги</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{header.html :: header}"></div>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4 d-flex justify-content-center">
+            <img th:src="@{/images/{id}.jpg(id=${book.id})}" class="img-fluid img-thumbnail" alt="Обложка книги" style="max-width: 100%; height: auto;" />
+        </div>
+
+        <div class="col-md-8">
+            <h1 th:text="${book.name}"></h1>
+            <p><strong>Год издания:</strong> <span th:text="${book.publicationYear}"></span></p>
+            <p><strong>Описание:</strong></p>
+            <p th:text="${book.description}"></p>
+            <p><strong>Цена:</strong> <span th:text="${book.price}"></span> руб.</p>
+            <p><strong>Авторы:</strong></p>
+            <ul>
+                <li th:each="author : ${book.authorDTOS}" th:text="${author.name}"></li>
+            </ul>
+
+            <p><strong>Жанры:</strong></p>
+            <ul>
+                <li th:each="genre : ${book.genreDTOS}" th:text="${genre.name}"></li>
+            </ul>
+
+            <div class="mt-4">
+                <form th:action="@{/cart/add}" method="post" class="d-inline">
+                    <input type="hidden" name="id" th:value="${book.id}" />
+                    <input type="hidden" name="quantity" value="1" />
+                    <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,7 +1,7 @@
 package org.web.dev.domain.entities;
 
 import jakarta.persistence.*;
-import org.web.dev.domain.OrderStatus;
+import org.web.dev.domain.enums.OrderStatus;
 import org.web.dev.exceptions.order.NotEnoughStockException;
 import org.web.dev.exceptions.order.OrderStatusChangeException;
 import org.web.dev.exceptions.order.RequiredOrderFieldIsNullException;
@@ -32,9 +32,6 @@ public class OrderEntity extends BaseEntity {
     }
 
     public void setOrderContent(BookEntity bookEntity, int quantity) {
-        if (bookEntity.getQuantity() < quantity) {
-            throw new NotEnoughStockException("Not enough stock for " + bookEntity.getName());
-        }
         OrderContentEntity orderContentEntity = new OrderContentEntity(
                 this,
                 bookEntity,

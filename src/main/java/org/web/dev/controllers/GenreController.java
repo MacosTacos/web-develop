@@ -4,17 +4,17 @@ package org.web.dev.controllers;
 import org.example.controllers.GenresController;
 import org.example.dtos.genres.CreateGenreForm;
 import org.example.dtos.genres.UpdateGenreForm;
-import org.example.input.GenreCreateInputModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.web.dev.services.impl.GenreService;
+import org.web.dev.services.GenreService;
+import org.web.dev.services.impl.GenreServiceImpl;
 
 @Controller
 public class GenreController implements GenresController {
     private final GenreService genreService;
 
-    public GenreController(GenreService genreService) {
+    public GenreController(GenreServiceImpl genreService) {
         this.genreService = genreService;
     }
 
