@@ -13,28 +13,32 @@
     <a th:href="@{/books}" class="btn btn-primary btn-sm">Назад</a>
   </div>
   <h1 class="text-center mb-4">Добавление новой книги</h1>
-  <form action="/books/create" method="POST" class="p-4 border rounded bg-light">
+  <form action="/books/create" method="POST" class="p-4 border rounded bg-light" th:object="${form}">
     <div class="mb-3">
-      <label for="book-name" class="form-label"></label>
-      <input type="text" id="book-name" name="name" class="form-control" placeholder="Название книги" required>
+      <label for="book-name" class="form-label">Название книги</label>
+      <input type="text" id="book-name" th:field="*{name}" class="form-control" placeholder="Название книги">
+      <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
     </div>
     <div class="mb-3">
-      <label for="book-publicationYear" class="form-label"></label>
-      <input type="number" id="book-publicationYear" name="publicationYear" class="form-control" placeholder="Год публикации" required>
+      <label for="book-publicationYear" class="form-label">Год публикации</label>
+      <input type="number" id="book-publicationYear" th:field="*{publicationYear}" class="form-control" placeholder="Год публикации">
+      <div class="text-danger" th:if="${#fields.hasErrors('publicationYear')}" th:errors="*{publicationYear}"></div>
     </div>
     <div class="mb-3">
-      <label for="book-price" class="form-label"></label>
-      <input type="number" id="book-price" name="price" class="form-control" placeholder="Цена" required>
+      <label for="book-price" class="form-label">Цена</label>
+      <input type="number" id="book-price" th:field="*{price}" class="form-control" placeholder="Цена">
+      <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
     </div>
     <div class="mb-3">
-      <label for="book-description" class="form-label"></label>
-      <input type="number" id="book-description" name="description" class="form-control" placeholder="Описание">
+      <label for="book-description" class="form-label">Описание</label>
+      <input type="text" id="book-description" th:field="*{description}" class="form-control" placeholder="Описание">
+      <div class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
     </div>
     <fieldset>
       <legend>Жанры</legend>
       <div th:each="genre : ${genres}">
         <label>
-          <input type="checkbox" name="genreIds" th:value="${genre.id}">
+          <input type="checkbox" th:field="*{genreIds}" th:value="${genre.id}">
           <span th:text="${genre.name}"></span>
         </label>
       </div>
@@ -43,7 +47,7 @@
       <legend>Авторы</legend>
       <div th:each="author : ${authors}">
         <label>
-          <input type="checkbox" name="authorIds" th:value="${author.id}">
+          <input type="checkbox" th:field="*{authorIds}" th:value="${author.id}">
           <span th:text="${author.name}"></span>
         </label>
       </div>

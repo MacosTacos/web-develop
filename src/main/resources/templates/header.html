@@ -6,9 +6,12 @@
          class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <div class="d-flex">
-                <a class="navbar-brand" th:href="@{/genres}">Жанры</a>
-                <a class="navbar-brand" th:href="@{/authors}">Авторы</a>
-                <a class="navbar-brand" th:href="@{/books}">Книги</a>
+                <a class="navbar-brand" th:href="@{/genres}" sec:authorize="hasRole('ADMIN')">Жанры</a>
+                <a class="navbar-brand" th:href="@{/authors}" sec:authorize="hasRole('ADMIN')">Авторы</a>
+                <a class="navbar-brand" th:href="@{/books/list}" sec:authorize="hasRole('ADMIN')">Книги</a>
+                <a class="navbar-brand" th:href="@{/books/genre}" sec:authorize="!isAuthenticated() || hasRole('USER')">Главная</a>
+                <a class="navbar-brand" th:href="@{/books/main}" sec:authorize="!isAuthenticated() || hasRole('USER')">Популярное</a>
+                <a class="navbar-brand" th:href="@{/cart}" sec:authorize="hasRole('USER')">Корзина</a>
             </div>
             <div class="d-flex gap-3">
                 <div>

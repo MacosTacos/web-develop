@@ -8,21 +8,22 @@
 </head>
 <body>
 <div class="container mt-4">
+    <div th:if="${badCredentials}" class="alert alert-danger" role="alert">
+        Invalid username or password. Please try again.
+    </div>
+
     <form action="/users/login" class="p-4 border rounded bg-light mx-auto w-50" method="POST">
         <div class="mb-3">
             <label for="username" class="form-label">Username:</label>
-            <input type="text" class="form-control" id="username" name="username" required>
-            <br><br>
+            <input type="text" class="form-control" id="username" name="username"
+                   th:value="${username}">
 
             <label for="password" class="form-label">Password:</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-            <br><br>
+            <input type="password" class="form-control" id="password" name="password">
 
-            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="submit" class="btn btn-primary mt-3">Login</button>
         </div>
-
     </form>
 </div>
-
 </body>
 </html>

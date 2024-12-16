@@ -61,6 +61,25 @@
                         </div>
                     </div>
                 </div>
+
+                <nav th:if="${results.hasContent()}" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${results.first} ? 'disabled'">
+                            <a class="page-link" th:href="@{/books/search(page=${results.number - 1}, size=${results.size}, title=${title}, authorIds=${selectedAuthors}, genreIds=${selectedGenres})}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, results.totalPages - 1)}"
+                            th:classappend="${pageNumber == results.number} ? 'active'">
+                            <a class="page-link" th:href="@{/books/search(page=${pageNumber}, size=${results.size}, title=${title}, authorIds=${selectedAuthors}, genreIds=${selectedGenres})}" th:text="${pageNumber + 1}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${results.last} ? 'disabled'">
+                            <a class="page-link" th:href="@{/books/search(page=${results.number + 1}, size=${results.size}, title=${title}, authorIds=${selectedAuthors}, genreIds=${selectedGenres})}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </form>

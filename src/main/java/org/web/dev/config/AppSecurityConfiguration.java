@@ -37,7 +37,7 @@ public class AppSecurityConfiguration {
                                         .requestMatchers("/error").permitAll()
                                         .requestMatchers("/", "/users/login", "/users/register", "/users/login-error")
                                         .permitAll().
-                                        requestMatchers("books/delete", "books/update", "books/create").hasRole(UserRole.ADMIN.name()).
+                                        requestMatchers("books/delete", "books/update", "books/create", "books/list").hasRole(UserRole.ADMIN.name()).
                                         requestMatchers("authors/delete", "authors/update", "authors/create", "authors").hasRole(UserRole.ADMIN.name()).
                                         requestMatchers("genres/delete", "genres/update", "genres/create", "genres").hasRole(UserRole.ADMIN.name()).
                                         requestMatchers("cart/add", "card/clear", "cart/remove", "cart").authenticated().

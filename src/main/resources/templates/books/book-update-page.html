@@ -13,31 +13,38 @@
     <a th:href="@{/books}" class="btn btn-primary btn-sm">Назад</a>
   </div>
   <h1 class="text-center mb-4">Обновление книги</h1>
-  <form th:object="${book}" action="/books/update" method="POST" class="p-4 border rounded bg-light">
+  <form th:object="${form}" action="/books/update" method="POST" class="p-4 border rounded bg-light">
     <input type="hidden" th:field="*{id}" />
+
     <div class="mb-3">
       <label for="book-name" class="form-label">Название книги</label>
-      <input type="text" id="book-name" th:field="*{name}" class="form-control" required>
+      <input type="text" id="book-name" th:field="*{name}" class="form-control" placeholder="Название книги">
+      <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
     </div>
+
     <div class="mb-3">
       <label for="book-publicationYear" class="form-label">Год публикации</label>
-      <input type="number" id="book-publicationYear" th:field="*{publicationYear}" class="form-control" required>
+      <input type="number" id="book-publicationYear" th:field="*{publicationYear}" class="form-control" placeholder="Год публикации">
+      <div class="text-danger" th:if="${#fields.hasErrors('publicationYear')}" th:errors="*{publicationYear}"></div>
     </div>
+
     <div class="mb-3">
       <label for="book-price" class="form-label">Цена</label>
-      <input type="number" id="book-price" th:field="*{price}" class="form-control" required>
+      <input type="number" id="book-price" th:field="*{price}" class="form-control" placeholder="Цена">
+      <div class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
     </div>
+
     <div class="mb-3">
       <label for="book-description" class="form-label">Описание</label>
-      <input type="text" id="book-description" th:field="*{description}" class="form-control">
+      <textarea id="book-description" th:field="*{description}" class="form-control" placeholder="Описание"></textarea>
+      <div class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
     </div>
 
     <fieldset>
       <legend>Жанры</legend>
       <div th:each="genre : ${genres}">
         <label>
-          <input type="checkbox" name="genreIds" th:value="${genre.id}"
-                 th:checked="${#lists.contains(book.genreDTOS.![id], genre.id)}" />
+          <input type="checkbox" th:field="*{genreIds}" th:value="${genre.id}" />
           <span th:text="${genre.name}"></span>
         </label>
       </div>
@@ -47,16 +54,14 @@
       <legend>Авторы</legend>
       <div th:each="author : ${authors}">
         <label>
-          <input type="checkbox" name="authorIds" th:value="${author.id}"
-                 th:checked="${#lists.contains(book.authorDTOS.![id], author.id)}" />
+          <input type="checkbox" th:field="*{authorIds}" th:value="${author.id}" />
           <span th:text="${author.name}"></span>
         </label>
       </div>
     </fieldset>
+
     <button type="submit" class="btn btn-primary">Сохранить</button>
   </form>
-
-
 </div>
 </body>
 </html>

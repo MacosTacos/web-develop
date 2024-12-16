@@ -10,7 +10,6 @@
 <div th:replace="~{header.html :: header}"></div>
 <div class="container mt-4">
   <div class="row">
-    <!-- Список жанров -->
     <div class="col-md-3">
       <div class="mb-4">
         <a th:href="@{/books/search}" class="btn btn-secondary w-100">Поиск</a>
@@ -25,7 +24,6 @@
       </ul>
     </div>
 
-    <!-- Карточки книг -->
     <div class="col-md-9">
       <div class="row row-cols-1 row-cols-md-3 g-4">
         <div class="col" th:each="book : ${books.content}">
@@ -40,7 +38,6 @@
         </div>
       </div>
 
-      <!-- Пагинация -->
       <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
           <li class="page-item" th:classappend="${books.hasPrevious()} ? '' : 'disabled'">

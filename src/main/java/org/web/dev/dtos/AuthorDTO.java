@@ -1,9 +1,10 @@
 package org.web.dev.dtos;
 
 
+import java.io.Serializable;
 import java.util.List;
 
-public class AuthorDTO {
+public class AuthorDTO implements Serializable {
     private Long id;
     private String name;
     private String description;

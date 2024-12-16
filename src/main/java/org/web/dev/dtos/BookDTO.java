@@ -1,8 +1,9 @@
 package org.web.dev.dtos;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class BookDTO {
+public class BookDTO implements Serializable {
     private Long id;
     private String name;
     private Integer publicationYear;

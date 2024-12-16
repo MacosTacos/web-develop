@@ -13,7 +13,7 @@
 
   <div th:if="${cartItems.isEmpty()}">
     <p class="text-center">Ваша корзина пуста.</p>
-    <a th:href="@{/books}" class="btn btn-primary">Перейти к покупкам</a>
+    <a th:href="@{/books/genre}" class="btn btn-primary">Перейти к покупкам</a>
   </div>
 
   <div th:if="${!cartItems.isEmpty()}">
