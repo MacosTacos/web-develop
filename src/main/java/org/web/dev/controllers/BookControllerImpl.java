@@ -1,5 +1,7 @@
 package org.web.dev.controllers;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.example.controllers.BookController;
 import org.example.dtos.books.CreateBookForm;
 import org.example.dtos.books.UpdateBookForm;
@@ -13,6 +15,7 @@ import org.web.dev.services.AuthorService;
 import org.web.dev.services.BookService;
 import org.web.dev.services.GenreService;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +25,7 @@ public class BookControllerImpl implements BookController {
     private final BookService bookService;
     private final GenreService genreService;
     private final AuthorService authorService;
+    private static final Logger LOG = LogManager.getLogger(Controller.class);
 
     public BookControllerImpl(BookService bookService, GenreService genreService, AuthorService authorService) {
         this.bookService = bookService;
@@ -30,29 +34,33 @@ public class BookControllerImpl implements BookController {
     }
 
     @Override
-    public String singleBookPage(Long id, Model model) {
+    public String singleBookPage(Long id, Principal principal, Model model) {
+        LOG.info("GET:/books/{} Single book page request from {}", id, principal != null ? principal.getName() : "not_authenticated");
         model.addAttribute("book", bookService.findById(id));
         return "main/single-book-page.html";
     }
 
     @Override
-    public String booksByGenre(Long id, int page, int size, Model model) {
+    public String booksByGenre(Long id, Principal principal, int page, int size, Model model) {
+        LOG.info("GET:/books/genre/{} Books by genre request from {}", id, principal != null ? principal.getName() : "not_authenticated");
         model.addAttribute("books", bookService.getPageByGenre(id, page, size));
         model.addAttribute("genres", genreService.getAll());
         return "main/books-by-genre-page.html";
     }
 
     @Override
-    public String mainPage(Model model) {
-        model.addAttribute("adventures", bookService.getPopularByGenre(1L));
-        model.addAttribute("detectives", bookService.getPopularByGenre(2L));
-        model.addAttribute("classics", bookService.getPopularByGenre(8L));
+    public String mainPage(Principal principal, Model model) {
+        LOG.info("GET:/books/main Main page request from " + (principal != null ? principal.getName() : "not_authenticated"));
+        model.addAttribute("adventures", bookService.getPopularByGenre(4L));
+        model.addAttribute("detectives", bookService.getPopularByGenre(1L));
+        model.addAttribute("classics", bookService.getPopularByGenre(5L));
         return "main/home-page.html";
     }
 
 
     @Override
-    public String getAll(Model model) {
+    public String getAll(Principal principal, Model model) {
+        LOG.info("GET:/books/list All books request from " + principal.getName());
         model.addAttribute("books", bookService.findAll());
         return "books/books.html";
     }
@@ -63,7 +71,9 @@ public class BookControllerImpl implements BookController {
                          String title,
                          int page,
                          int size,
+                         Principal principal,
                          Model model) {
+        LOG.info("GET:/books/search Search request from " + (principal != null ? principal.getName() : "not_authenticated"));
         model.addAttribute("results", bookService.search(genreIds, authorIds, title, page, size));
         model.addAttribute("authors", authorService.getAll());
         model.addAttribute("genres", genreService.getAll());
@@ -74,7 +84,8 @@ public class BookControllerImpl implements BookController {
     }
 
     @Override
-    public String createBookForm(Model model) {
+    public String createBookForm(Principal principal, Model model) {
+        LOG.info("GET:/books/create Book create page request from " + principal.getName());
         model.addAttribute("genres", genreService.getAll());
         model.addAttribute("authors", authorService.getAll());
         model.addAttribute("form", new CreateBookForm(null, null, null, null, null, null));
@@ -82,7 +93,8 @@ public class BookControllerImpl implements BookController {
     }
 
     @Override
-    public String createBook(CreateBookForm form, BindingResult bindingResult, Model model) {
+    public String createBook(CreateBookForm form, BindingResult bindingResult, Principal principal, Model model) {
+        LOG.info("POST:/books/create New book create request from " + principal.getName());
         if (bindingResult.hasErrors()) {
             model.addAttribute("genres", genreService.getAll());
             model.addAttribute("authors", authorService.getAll());
@@ -93,7 +105,8 @@ public class BookControllerImpl implements BookController {
     }
 
     @Override
-    public String updateBookForm(Long id, Model model) {
+    public String updateBookForm(Long id, Principal principal, Model model) {
+        LOG.info("GET:/books/update/{} Book update page request from {}", id, principal.getName());
         BookDTO bookDTO = bookService.findById(id);
         List<Long> genreIds = bookDTO.getGenreDTOS().stream()
                         .map(GenreDTO::getId).toList();
@@ -108,7 +121,8 @@ public class BookControllerImpl implements BookController {
     }
 
     @Override
-    public String updateBook(UpdateBookForm form, BindingResult bindingResult, Model model) {
+    public String updateBook(UpdateBookForm form, BindingResult bindingResult, Principal principal, Model model) {
+        LOG.info("POST:/books/update{} Book update request from {}", form.id(), principal.getName());
         if (bindingResult.hasErrors()) {
             model.addAttribute("genres", genreService.getAll());
             model.addAttribute("authors", authorService.getAll());
@@ -119,7 +133,8 @@ public class BookControllerImpl implements BookController {
     }
 
     @Override
-    public String deleteBook(Long id, Model model) {
+    public String deleteBook(Long id, Principal principal, Model model) {
+        LOG.info("GET:/books/delete/{} Book delete request from {}", id, principal.getName());
         bookService.delete(id);
         return "redirect:/books/list";
     }

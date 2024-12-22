@@ -109,7 +109,7 @@ public class BookEntity extends BaseEntity {
         if (quantity >= 0) {
             this.quantity += quantity;
         } else {
-            throw new InvalidNumberException("quantity can not be less than 0");
+            throw new InvalidNumberException("quantity cannot be less than 0");
         }
     }
 
@@ -122,7 +122,7 @@ public class BookEntity extends BaseEntity {
         if (price >= 0) {
             this.price = price;
         } else {
-            throw new InvalidNumberException("price can not be less than 0");
+            throw new InvalidNumberException("price cannot be less than 0");
         }
     }
 }

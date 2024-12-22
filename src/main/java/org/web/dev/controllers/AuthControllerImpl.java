@@ -1,46 +1,53 @@
 package org.web.dev.controllers;
 
-import jakarta.validation.Valid;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.example.controllers.AuthController;
 import org.example.dtos.auth.RegistrationForm;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.web.dev.services.impl.AuthService;
 
 @Controller
-@RequestMapping("/users")
-public class AuthControllerImpl {
+public class AuthControllerImpl implements AuthController {
     private final AuthService authService;
+    private static final Logger LOG = LogManager.getLogger(Controller.class);
 
     public AuthControllerImpl(AuthService authService) {
         this.authService = authService;
     }
 
-    @GetMapping("/register")
-    public String register() {
+    @Override
+    public String register(Model model) {
+        LOG.info("GET:/users/register Registration page requested");
+        model.addAttribute("form", new RegistrationForm(null, null, null, null));
         return "auth/registration.html";
     }
 
-    @PostMapping("/register")
-    public String register(@Valid RegistrationForm form, BindingResult bindingResult) {
+    @Override
+    public String register(RegistrationForm form, BindingResult bindingResult, Model model) {
+        LOG.info("POST:/users/register Registration request");
+        if (bindingResult.hasErrors()) {
+            return "auth/registration.html";
+        }
         authService.register(form);
-        return "redirect:/login";
+        return "redirect:/users/login";
     }
 
-    @GetMapping("/login")
+    @Override
     public String login() {
+        LOG.info("GET:/users/login Login page requested");
         return "auth/login.html";
     }
 
-    @PostMapping("/login-error")
+    @Override
     public String onFailedLogin(
-            @ModelAttribute(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY) String username,
+            String username,
             RedirectAttributes redirectAttributes) {
+        LOG.info("POST:/users/login-error Login failed for username " + username);
 
         redirectAttributes.addFlashAttribute(UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY, username);
         redirectAttributes.addFlashAttribute("badCredentials", true);

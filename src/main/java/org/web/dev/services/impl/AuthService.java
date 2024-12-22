@@ -9,6 +9,7 @@ import org.web.dev.domain.entities.UserEntity;
 import org.web.dev.domain.enums.UserRole;
 import org.web.dev.exceptions.ResourceNotFoundException;
 import org.web.dev.exceptions.user.UserEmailException;
+import org.web.dev.exceptions.user.UserNameException;
 import org.web.dev.exceptions.user.UserPasswordException;
 import org.web.dev.repositories.RoleRepository;
 import org.web.dev.repositories.UserRepository;
@@ -36,6 +37,10 @@ public class AuthService {
         Optional<UserEntity> userEntityCheck = userRepository.findByEmail(form.email());
         if (userEntityCheck.isPresent()) {
             throw new UserEmailException("user with email " + form.email() + " already exists");
+        }
+        userEntityCheck = userRepository.findByName(form.email());
+        if (userEntityCheck.isPresent()) {
+            throw new UserNameException("user with username " + form.name() + " already exists");
         }
 
         RoleEntity role = roleRepository.findRoleByName(UserRole.USER)

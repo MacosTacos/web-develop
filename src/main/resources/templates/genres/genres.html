@@ -24,6 +24,7 @@
             <td th:text="${genre.name}">Название жанра</td>
             <td>
                 <a th:href="@{/genres/update/{id}(id=${genre.id})}" class="btn btn-primary btn-sm">Изменить</a>
+                <a th:href="@{/genres/delete/{id}(id=${genre.id})}" class="btn btn-danger btn-sm">Удалить</a>
             </td>
         </tr>
         </tbody>

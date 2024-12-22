@@ -16,10 +16,10 @@
       </div>
       <ul class="list-group">
         <li class="list-group-item">
-          <a th:href="@{/books/genre(page=0, size=10)}" class="text-decoration-none">Все</a>
+          <a th:href="@{/books/genre(page=0, size=9)}" class="text-decoration-none">Все</a>
         </li>
         <li class="list-group-item" th:each="genre : ${genres}">
-          <a th:href="@{/books/genre(id=${genre.id}, page=0, size=10)}" class="text-decoration-none" th:text="${genre.name}"></a>
+          <a th:href="@{/books/genre(id=${genre.id}, page=0, size=9)}" class="text-decoration-none" th:text="${genre.name}"></a>
         </li>
       </ul>
     </div>

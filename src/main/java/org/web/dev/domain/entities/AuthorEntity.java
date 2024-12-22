@@ -10,6 +10,7 @@ public class AuthorEntity extends BaseEntity {
 
     private String name;
     private String description;
+    private boolean isDeleted;
     private List<BookEntity> bookEntities;
 
     protected AuthorEntity() {
@@ -18,6 +19,7 @@ public class AuthorEntity extends BaseEntity {
     public AuthorEntity(String name, String description) {
         this.name = name;
         this.description = description;
+        this.isDeleted = false;
     }
 
     public String getName() {
@@ -34,6 +36,15 @@ public class AuthorEntity extends BaseEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Column(name = "is_deleted")
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     @ManyToMany(mappedBy = "authorEntities", fetch = FetchType.LAZY)

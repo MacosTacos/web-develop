@@ -48,9 +48,6 @@
       <div class="col-md-4">
         <div class="card">
           <div class="card-body">
-            <h4 class="card-title">Итого</h4>
-            <p class="card-text">Общее количество: <span th:text="${totalQuantity}"></span></p>
-            <p class="card-text">Общая стоимость: <span th:text="${totalPrice}"></span> руб.</p>
             <form th:action="@{/orders/create}" method="post">
               <button type="submit" class="btn btn-success w-100">Оформить заказ</button>
             </form>

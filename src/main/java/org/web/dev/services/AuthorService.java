@@ -11,4 +11,5 @@ public interface AuthorService {
     List<AuthorDTO> getAll();
     AuthorDTO getAuthor(Long id);
     void update(UpdateAuthorForm updateAuthorForm);
+    void delete(Long id);
 }

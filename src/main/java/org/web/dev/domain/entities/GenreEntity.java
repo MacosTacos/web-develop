@@ -1,9 +1,6 @@
 package org.web.dev.domain.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -12,6 +9,7 @@ import java.util.List;
 public class GenreEntity extends BaseEntity {
 
     private String name;
+    private boolean isDeleted;
     private List<BookEntity> bookEntities;
 
     protected GenreEntity() {
@@ -19,10 +17,20 @@ public class GenreEntity extends BaseEntity {
 
     public GenreEntity(String name) {
         this.name = name;
+        this.isDeleted = false;
     }
 
     public String getName() {
         return name;
+    }
+
+    @Column(name = "is_deleted")
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     public void setName(String name) {

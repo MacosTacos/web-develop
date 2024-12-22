@@ -26,6 +26,7 @@
       <td th:text="${author.description}">Описание</td>
       <td>
         <a th:href="@{/authors/update/{id}(id=${author.id})}" class="btn btn-primary btn-sm">Изменить</a>
+        <a th:href="@{/authors/delete/{id}(id=${author.id})}" class="btn btn-danger btn-sm">Удалить</a>
       </td>
     </tr>
     </tbody>

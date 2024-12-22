@@ -112,7 +112,7 @@ public class OrderEntity extends BaseEntity {
         if (userEntity != null) {
             this.userEntity = userEntity;
         } else {
-            throw new RequiredOrderFieldIsNullException("UserEntity can not be null");
+            throw new RequiredOrderFieldIsNullException("UserEntity cannot be null");
         }
     }
 }

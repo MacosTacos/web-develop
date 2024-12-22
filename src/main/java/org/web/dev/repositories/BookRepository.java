@@ -19,7 +19,7 @@ public interface BookRepository extends BaseRepository<BookEntity, Long> {
     List<BookEntity> findAll();
 
 
-    @Query(value = "select b from BookEntity b where b.deleted = false and b.id = :id and b.deleted = false")
+    @Query(value = "select b from BookEntity b where b.id = :id and b.deleted = false")
     Optional<BookEntity> findById(@Param(value = "id") Long id);
 
     @Query(value = "select b from BookEntity b where b.deleted = false")

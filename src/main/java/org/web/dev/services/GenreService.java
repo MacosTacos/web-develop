@@ -11,4 +11,5 @@ public interface GenreService {
     GenreDTO getGenre(Long id);
     List<GenreDTO> getAll();
     void update(UpdateGenreForm updateGenreForm);
+    void delete(Long id);
 }

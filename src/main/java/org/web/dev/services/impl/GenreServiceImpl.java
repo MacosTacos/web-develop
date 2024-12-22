@@ -68,4 +68,16 @@ public class GenreServiceImpl implements GenreService {
         genreRepository.save(genreEntity);
     }
 
+    @Override
+    @Caching(evict = {
+            @CacheEvict(value = "genre", key = "#id"),
+            @CacheEvict(value = "all_genres", allEntries = true)
+    })
+    public void delete(Long id) {
+        GenreEntity genreEntity = genreRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Genre with id " + id + " not found"));
+        genreEntity.setDeleted(true);
+        genreRepository.save(genreEntity);
+    }
+
 }

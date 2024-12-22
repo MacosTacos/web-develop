@@ -13,15 +13,16 @@
     <a th:href="@{/authors}" class="btn btn-primary btn-sm">Назад</a>
   </div>
   <h1 class="text-center">Обновление автора</h1>
-  <form action="/authors/update" method="POST" class="mt-4">
-    <input type="hidden" name="id" th:value="${author.id}">
+  <form action="/authors/update" method="POST" class="mt-4" th:object="${form}">
+    <input type="hidden" name="id" th:value="${form.id}">
     <div class="mb-3">
-      <label for="author-name" class="form-label">Название жанра</label>
-      <input type="text" class="form-control" id="author-name" name="name" th:value="${author.name}" required>
+      <label for="name" class="form-label">Название жанра</label>
+      <input type="text" id="name" th:field="*{name}" class="form-control" >
+      <div class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
     </div>
     <div class="mb-3">
-      <label for="author-description" class="form-label">Название жанра</label>
-      <input type="text" class="form-control" id="author-description" name="description" th:value="${author.description}">
+      <label for="description" class="form-label">Описание</label>
+      <input type="text" id="description" th:field="*{description}" class="form-control">
     </div>
     <button type="submit" class="btn btn-success">Сохранить изменения</button>
   </form>
