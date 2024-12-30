@@ -18,7 +18,7 @@
         <li class="list-group-item">
           <a th:href="@{/books/genre(page=0, size=9)}" class="text-decoration-none">Все</a>
         </li>
-        <li class="list-group-item" th:each="genre : ${genres}">
+        <li class="list-group-item" th:each="genre : ${view.genres}">
           <a th:href="@{/books/genre(id=${genre.id}, page=0, size=9)}" class="text-decoration-none" th:text="${genre.name}"></a>
         </li>
       </ul>
@@ -26,7 +26,7 @@
 
     <div class="col-md-9">
       <div class="row row-cols-1 row-cols-md-3 g-4">
-        <div class="col" th:each="book : ${books.content}">
+        <div class="col" th:each="book : ${view.books.content}">
           <div class="card h-100">
             <img th:src="@{/images/{id}.jpg(id=${book.id})}" class="card-img-top" alt="Обложка книги" />
             <div class="card-body">
@@ -40,16 +40,16 @@
 
       <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
-          <li class="page-item" th:classappend="${books.hasPrevious()} ? '' : 'disabled'">
-            <a class="page-link" th:href="@{/books/genre(id=${param.id}, page=${books.number - 1}, size=${books.size})}" aria-label="Previous">
+          <li class="page-item" th:classappend="${view.books.hasPrevious()} ? '' : 'disabled'">
+            <a class="page-link" th:href="@{/books/genre(id=${param.id}, page=${view.books.number - 1}, size=${view.books.size})}" aria-label="Previous">
               <span aria-hidden="true">&laquo;</span>
             </a>
           </li>
-          <li class="page-item" th:each="i : ${#numbers.sequence(0, books.totalPages - 1)}" th:classappend="${i == books.number} ? 'active' : ''">
-            <a class="page-link" th:href="@{/books/genre(id=${param.id}, page=${i}, size=${books.size})}" th:text="${i + 1}"></a>
+          <li class="page-item" th:each="i : ${#numbers.sequence(0, view.books.totalPages - 1)}" th:classappend="${i == view.books.number} ? 'active' : ''">
+            <a class="page-link" th:href="@{/books/genre(id=${param.id}, page=${i}, size=${view.books.size})}" th:text="${i + 1}"></a>
           </li>
-          <li class="page-item" th:classappend="${books.hasNext()} ? '' : 'disabled'">
-            <a class="page-link" th:href="@{/books/genre(id=${param.id}, page=${books.number + 1}, size=${books.size})}" aria-label="Next">
+          <li class="page-item" th:classappend="${view.books.hasNext()} ? '' : 'disabled'">
+            <a class="page-link" th:href="@{/books/genre(id=${param.id}, page=${view.books.number + 1}, size=${view.books.size})}" aria-label="Next">
               <span aria-hidden="true">&raquo;</span>
             </a>
           </li>

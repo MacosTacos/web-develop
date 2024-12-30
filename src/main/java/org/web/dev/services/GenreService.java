@@ -7,9 +7,9 @@ import org.web.dev.dtos.GenreDTO;
 import java.util.List;
 
 public interface GenreService {
-    void createGenre(CreateGenreForm createGenreForm);
+    void createGenre(GenreDTO genreDTO);
     GenreDTO getGenre(Long id);
     List<GenreDTO> getAll();
-    void update(UpdateGenreForm updateGenreForm);
+    void update(GenreDTO genreDTO);
     void delete(Long id);
 }

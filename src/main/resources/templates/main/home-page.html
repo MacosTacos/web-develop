@@ -12,7 +12,7 @@
 
     <h2 class="mb-3">Популярные детективы</h2>
     <div class="row row-cols-1 row-cols-md-5 g-4">
-        <div class="col" th:each="book : ${detectives}">
+        <div class="col" th:each="book : ${view.detectives}">
             <div class="card h-100">
                 <img th:src="@{/images/{id}.jpg(id=${book.id})}" class="card-img-top" alt="Обложка книги" />
                 <div class="card-body">
@@ -25,7 +25,7 @@
 
     <h2 class="mt-5 mb-3">Популярные приключения</h2>
     <div class="row row-cols-1 row-cols-md-5 g-4">
-        <div class="col" th:each="book : ${adventures}">
+        <div class="col" th:each="book : ${view.adventures}">
             <div class="card h-100">
                 <img th:src="@{/images/{id}.jpg(id=${book.id})}" class="card-img-top" alt="Обложка книги" />
                 <div class="card-body">
@@ -38,7 +38,7 @@
 
     <h2 class="mt-5 mb-3">Популярная классика</h2>
     <div class="row row-cols-1 row-cols-md-5 g-4">
-        <div class="col" th:each="book : ${classics}">
+        <div class="col" th:each="book : ${view.classics}">
             <div class="card h-100">
                 <img th:src="@{/images/{id}.jpg(id=${book.id})}" class="card-img-top" alt="Обложка книги" />
                 <div class="card-body">

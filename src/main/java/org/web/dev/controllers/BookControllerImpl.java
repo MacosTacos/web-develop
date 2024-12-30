@@ -3,8 +3,11 @@ package org.web.dev.controllers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.example.controllers.BookController;
-import org.example.dtos.books.CreateBookForm;
-import org.example.dtos.books.UpdateBookForm;
+import org.example.dtos.authors.AuthorView;
+import org.example.dtos.books.*;
+import org.example.dtos.genres.GenreView;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,11 +29,13 @@ public class BookControllerImpl implements BookController {
     private final GenreService genreService;
     private final AuthorService authorService;
     private static final Logger LOG = LogManager.getLogger(Controller.class);
+    private final ModelMapper modelMapper;
 
-    public BookControllerImpl(BookService bookService, GenreService genreService, AuthorService authorService) {
+    public BookControllerImpl(BookService bookService, GenreService genreService, AuthorService authorService, ModelMapper modelMapper) {
         this.bookService = bookService;
         this.genreService = genreService;
         this.authorService = authorService;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -43,17 +48,29 @@ public class BookControllerImpl implements BookController {
     @Override
     public String booksByGenre(Long id, Principal principal, int page, int size, Model model) {
         LOG.info("GET:/books/genre/{} Books by genre request from {}", id, principal != null ? principal.getName() : "not_authenticated");
-        model.addAttribute("books", bookService.getPageByGenre(id, page, size));
-        model.addAttribute("genres", genreService.getAll());
+        Page<BookView> bookViews = bookService.getPageByGenre(id, page, size).map(bookDTO -> modelMapper.map(bookDTO, BookView.class));
+        List<GenreView> genreViews = genreService.getAll().stream().map(
+                genreDTO -> modelMapper.map(genreDTO, GenreView.class)
+        ).toList();
+        BookByGenreView bookByGenreView = new BookByGenreView(bookViews, genreViews);
+        model.addAttribute("view", bookByGenreView);
         return "main/books-by-genre-page.html";
     }
 
     @Override
     public String mainPage(Principal principal, Model model) {
         LOG.info("GET:/books/main Main page request from " + (principal != null ? principal.getName() : "not_authenticated"));
-        model.addAttribute("adventures", bookService.getPopularByGenre(4L));
-        model.addAttribute("detectives", bookService.getPopularByGenre(1L));
-        model.addAttribute("classics", bookService.getPopularByGenre(5L));
+        List<BookView> booksByFirstGenre = bookService.getPopularByGenre(4L).stream().map(
+                bookDTO -> modelMapper.map(bookDTO, BookView.class)
+        ).toList();
+        List<BookView> booksBySecondGenre = bookService.getPopularByGenre(1L).stream().map(
+                bookDTO -> modelMapper.map(bookDTO, BookView.class)
+        ).toList();
+        List<BookView> booksByThirdGenre = bookService.getPopularByGenre(5L).stream().map(
+                bookDTO -> modelMapper.map(bookDTO, BookView.class)
+        ).toList();
+        MainPageView mainPageView = new MainPageView(booksByFirstGenre, booksBySecondGenre, booksByThirdGenre);
+        model.addAttribute("view", mainPageView);
         return "main/home-page.html";
     }
 
@@ -61,7 +78,10 @@ public class BookControllerImpl implements BookController {
     @Override
     public String getAll(Principal principal, Model model) {
         LOG.info("GET:/books/list All books request from " + principal.getName());
-        model.addAttribute("books", bookService.findAll());
+        List<BookView> bookViews = bookService.findAll().stream().map(
+                bookDTO -> modelMapper.map(bookDTO, BookView.class)
+        ).toList();
+        model.addAttribute("books", bookViews);
         return "books/books.html";
     }
 
@@ -74,9 +94,15 @@ public class BookControllerImpl implements BookController {
                          Principal principal,
                          Model model) {
         LOG.info("GET:/books/search Search request from " + (principal != null ? principal.getName() : "not_authenticated"));
-        model.addAttribute("results", bookService.search(genreIds, authorIds, title, page, size));
-        model.addAttribute("authors", authorService.getAll());
-        model.addAttribute("genres", genreService.getAll());
+        Page<BookView> results = bookService.search(genreIds, authorIds, title, page, size).map(bookDTO -> modelMapper.map(bookDTO, BookView.class));
+        List<GenreView> genreViews = genreService.getAll().stream().map(
+                genreDTO -> modelMapper.map(genreDTO, GenreView.class)
+        ).toList();
+        List<AuthorView> authorViews = authorService.getAll().stream().map(
+                authorDTO -> modelMapper.map(authorDTO, AuthorView.class)
+        ).toList();
+        SearchView searchView = new SearchView(results, genreViews, authorViews);
+        model.addAttribute("view", searchView);
         model.addAttribute("selectedGenres", genreIds != null ? genreIds : new ArrayList<Long>());
         model.addAttribute("selectedAuthors", authorIds != null ? authorIds : new ArrayList<Long>());
         model.addAttribute("title", title);
@@ -88,7 +114,7 @@ public class BookControllerImpl implements BookController {
         LOG.info("GET:/books/create Book create page request from " + principal.getName());
         model.addAttribute("genres", genreService.getAll());
         model.addAttribute("authors", authorService.getAll());
-        model.addAttribute("form", new CreateBookForm(null, null, null, null, null, null));
+        model.addAttribute("form", new CreateBookForm());
         return "books/book-create-page.html";
     }
 
@@ -100,7 +126,8 @@ public class BookControllerImpl implements BookController {
             model.addAttribute("authors", authorService.getAll());
             return "books/book-create-page.html";
         }
-        bookService.createBook(form);
+        BookDTO bookDTO = modelMapper.map(form, BookDTO.class);
+        bookService.createBook(bookDTO, form.getGenreIds(), form.getAuthorIds());
         return "redirect:/books/list";
     }
 
@@ -113,22 +140,29 @@ public class BookControllerImpl implements BookController {
         System.out.println(genreIds.getFirst());
         List<Long> authorIds = bookDTO.getAuthorDTOS().stream()
                         .map(AuthorDTO::getId).toList();
-        UpdateBookForm form = new UpdateBookForm(bookDTO.getId(), bookDTO.getName(), bookDTO.getPrice(), bookDTO.getPublicationYear(), bookDTO.getDescription(), genreIds, authorIds);
+        UpdateBookForm form = new UpdateBookForm(bookDTO.getId(), bookDTO.getName(), bookDTO.getDescription(), bookDTO.getPrice(), bookDTO.getPublicationYear(), genreIds, authorIds);
         model.addAttribute("form", form);
-        model.addAttribute("genres", genreService.getAll());
-        model.addAttribute("authors", authorService.getAll());
+        List<GenreView> genreViews = genreService.getAll().stream().map(
+                genreDTO -> modelMapper.map(genreDTO, GenreView.class)
+        ).toList();
+        model.addAttribute("genres", genreViews);
+        List<AuthorView> authorViews = authorService.getAll().stream().map(
+                authorDTO -> modelMapper.map(authorDTO, AuthorView.class)
+        ).toList();
+        model.addAttribute("authors", authorViews);
         return "books/book-update-page.html";
     }
 
     @Override
     public String updateBook(UpdateBookForm form, BindingResult bindingResult, Principal principal, Model model) {
-        LOG.info("POST:/books/update{} Book update request from {}", form.id(), principal.getName());
+        LOG.info("POST:/books/update{} Book update request from {}", form.getId(), principal.getName());
         if (bindingResult.hasErrors()) {
             model.addAttribute("genres", genreService.getAll());
             model.addAttribute("authors", authorService.getAll());
             return "books/book-update-page.html";
         }
-        bookService.update(form);
+        BookDTO bookDTO = modelMapper.map(form, BookDTO.class);
+        bookService.update(bookDTO, form.getGenreIds(), form.getAuthorIds());
         return "redirect:/books/list";
     }
 

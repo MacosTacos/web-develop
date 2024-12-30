@@ -32,9 +32,9 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     @CacheEvict(value = "authors", allEntries = true)
-    public void createAuthor(CreateAuthorForm createAuthorForm) {
-        if (createAuthorForm != null && createAuthorForm.name() != null) {
-            AuthorEntity authorEntity = new AuthorEntity(createAuthorForm.name(), createAuthorForm.description());
+    public void createAuthor(AuthorDTO authorDTO) {
+        if (authorDTO != null && authorDTO.getName() != null) {
+            AuthorEntity authorEntity = new AuthorEntity(authorDTO.getName(), authorDTO.getDescription());
             authorRepository.save(authorEntity);
         }
     }
@@ -61,13 +61,13 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     @Caching(evict = {
             @CacheEvict(value = "authors", allEntries = true),
-            @CacheEvict(value = "author", key = "#updateAuthorForm.id()")
+            @CacheEvict(value = "author", key = "#authorDTO.getId()")
     })
-    public void update(UpdateAuthorForm updateAuthorForm) {
-        AuthorEntity authorEntity = authorRepository.findById(updateAuthorForm.id())
-                .orElseThrow(() -> new ResourceNotFoundException("author with id " + updateAuthorForm.id() + " not found"));
-        authorEntity.setName(updateAuthorForm.name());
-        authorEntity.setDescription(updateAuthorForm.description());
+    public void update(AuthorDTO authorDTO) {
+        AuthorEntity authorEntity = authorRepository.findById(authorDTO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("author with id " + authorDTO.getId() + " not found"));
+        authorEntity.setName(authorDTO.getName());
+        authorEntity.setDescription(authorDTO.getDescription());
         authorRepository.save(authorEntity);
     }
 

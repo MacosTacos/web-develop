@@ -19,7 +19,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="genre : ${genres}">
+        <tr th:each="genre : ${genres.genres}">
             <td th:text="${genre.id}">1</td>
             <td th:text="${genre.name}">Название жанра</td>
             <td>

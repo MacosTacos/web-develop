@@ -50,13 +50,13 @@ public class BookServiceImpl implements BookService {
             @CacheEvict(value = "books_search", allEntries = true),
             @CacheEvict(value = "genres", allEntries = true)
     })
-    public void createBook(CreateBookForm createBookForm) {
-        List<GenreEntity> genreEntities = genreRepository.findAllById(createBookForm.genreIds());
-        List<AuthorEntity> authorEntities = authorRepository.findAllById(createBookForm.authorIds());
+    public void createBook(BookDTO bookDTO, List<Long> genreIds, List<Long> authorIds) {
+        List<GenreEntity> genreEntities = genreRepository.findAllById(genreIds);
+        List<AuthorEntity> authorEntities = authorRepository.findAllById(authorIds);
         BookEntity bookEntity = new BookEntity(
-                createBookForm.name(),
-                createBookForm.publicationYear(),
-                createBookForm.price(),
+                bookDTO.getName(),
+                bookDTO.getPublicationYear(),
+                bookDTO.getPrice(),
                 genreEntities,
                 authorEntities
         );
@@ -153,19 +153,19 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Caching(evict = {
-            @CacheEvict(value = "book", key = "#form.id()"),
+            @CacheEvict(value = "book", key = "#bookDTO.getId()"),
             @CacheEvict(value = "page_by_genre", allEntries = true),
             @CacheEvict(value = "books_search", allEntries = true)
     })
-    public void update(UpdateBookForm form) {
-        BookEntity bookEntity = bookRepository.findById(form.id())
-                .orElseThrow(() -> new ResourceNotFoundException("Book with id " + form.id() + "not found"));
-        bookEntity.setName(form.name());
-        bookEntity.setPublicationYear(form.publicationYear());
-        bookEntity.setPrice(form.price());
-        bookEntity.setDescription(form.description());
-        bookEntity.setGenreEntities(genreRepository.findAllById(form.genreIds()));
-        bookEntity.setAuthorEntities(authorRepository.findAllById(form.authorIds()));
+    public void update(BookDTO bookDTO, List<Long> genreIds, List<Long> authorIds) {
+        BookEntity bookEntity = bookRepository.findById(bookDTO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Book with id " + bookDTO.getId() + "not found"));
+        bookEntity.setName(bookDTO.getName());
+        bookEntity.setPublicationYear(bookDTO.getPublicationYear());
+        bookEntity.setPrice(bookDTO.getPrice());
+        bookEntity.setDescription(bookDTO.getDescription());
+        bookEntity.setGenreEntities(genreRepository.findAllById(genreIds));
+        bookEntity.setAuthorEntities(authorRepository.findAllById(authorIds));
         bookRepository.save(bookEntity);
     }
 

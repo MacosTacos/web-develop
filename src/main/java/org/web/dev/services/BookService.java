@@ -10,13 +10,13 @@ import org.web.dev.dtos.GenreDTO;
 import java.util.List;
 
 public interface BookService {
-    void createBook(CreateBookForm createBookForm);
+    void createBook(BookDTO bookDTO, List<Long> genreIds, List<Long> authorIds);
     Page<BookDTO> getPage(int page, int size);
     List<BookDTO> getPopularByGenre(Long id);
     BookDTO findById(Long id);
     Page<BookDTO> getPageByGenre(Long id, int page, int size);
     List<BookDTO> findAll();
-    void update(UpdateBookForm form);
+    void update(BookDTO bookDTO, List<Long> genreIds, List<Long> authorIds);
     void delete(Long id);
     Page<BookDTO> search(List<Long> selectedGenres, List<Long> selectedAuthors, String title, int page, int size);
 }

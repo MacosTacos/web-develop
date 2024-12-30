@@ -22,7 +22,7 @@
 
                 <div class="mb-3">
                     <h6>Авторы</h6>
-                    <div th:each="author : ${authors}">
+                    <div th:each="author : ${view.authors}">
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" name="authorIds"
                                    th:value="${author.id}" th:checked="${selectedAuthors.contains(author.id)}" />
@@ -33,7 +33,7 @@
 
                 <div class="mb-3">
                     <h6>Жанры</h6>
-                    <div th:each="genre : ${genres}">
+                    <div th:each="genre : ${view.genres}">
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" name="genreIds"
                                    th:value="${genre.id}" th:checked="${selectedGenres.contains(genre.id)}" />
@@ -47,11 +47,11 @@
 
             <div class="col-md-9">
                 <h5>Результаты поиска</h5>
-                <div th:if="${results.isEmpty()}">
+                <div th:if="${view.results.isEmpty()}">
                     <p>Ничего не найдено.</p>
                 </div>
-                <div class="row row-cols-1 row-cols-md-3 g-4" th:if="${!results.isEmpty()}">
-                    <div class="col" th:each="book : ${results}">
+                <div class="row row-cols-1 row-cols-md-3 g-4" th:if="${!view.results.isEmpty()}">
+                    <div class="col" th:each="book : ${view.results}">
                         <div class="card h-100">
                             <img th:src="@{/images/{id}.jpg(id=${book.id})}" class="card-img-top" alt="Обложка книги" />
                             <div class="card-body text-center">
@@ -62,19 +62,19 @@
                     </div>
                 </div>
 
-                <nav th:if="${results.hasContent()}" class="mt-4">
+                <nav th:if="${view.results.hasContent()}" class="mt-4">
                     <ul class="pagination justify-content-center">
-                        <li class="page-item" th:classappend="${results.first} ? 'disabled'">
-                            <a class="page-link" th:href="@{/books/search(page=${results.number - 1}, size=${results.size}, title=${title}, authorIds=${selectedAuthors}, genreIds=${selectedGenres})}" aria-label="Previous">
+                        <li class="page-item" th:classappend="${view.results.first} ? 'disabled'">
+                            <a class="page-link" th:href="@{/books/search(page=${view.results.number - 1}, size=${view.results.size}, title=${title}, authorIds=${selectedAuthors}, genreIds=${selectedGenres})}" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
-                        <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, results.totalPages - 1)}"
-                            th:classappend="${pageNumber == results.number} ? 'active'">
-                            <a class="page-link" th:href="@{/books/search(page=${pageNumber}, size=${results.size}, title=${title}, authorIds=${selectedAuthors}, genreIds=${selectedGenres})}" th:text="${pageNumber + 1}"></a>
+                        <li class="page-item" th:each="pageNumber : ${#numbers.sequence(0, view.results.totalPages - 1)}"
+                            th:classappend="${pageNumber == view.results.number} ? 'active'">
+                            <a class="page-link" th:href="@{/books/search(page=${pageNumber}, size=${view.results.size}, title=${title}, authorIds=${selectedAuthors}, genreIds=${selectedGenres})}" th:text="${pageNumber + 1}"></a>
                         </li>
-                        <li class="page-item" th:classappend="${results.last} ? 'disabled'">
-                            <a class="page-link" th:href="@{/books/search(page=${results.number + 1}, size=${results.size}, title=${title}, authorIds=${selectedAuthors}, genreIds=${selectedGenres})}" aria-label="Next">
+                        <li class="page-item" th:classappend="${view.results.last} ? 'disabled'">
+                            <a class="page-link" th:href="@{/books/search(page=${view.results.number + 1}, size=${view.results.size}, title=${title}, authorIds=${selectedAuthors}, genreIds=${selectedGenres})}" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>

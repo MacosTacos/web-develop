@@ -17,7 +17,7 @@ import org.web.dev.services.GenreService;
 import java.util.List;
 
 @Service
-@EnableCaching
+//@EnableCaching
 public class GenreServiceImpl implements GenreService {
 
     private final GenreRepository genreRepository;
@@ -30,9 +30,9 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     @CacheEvict(value = "all_genres", allEntries = true)
-    public void createGenre(CreateGenreForm createGenreForm) {
-        if (createGenreForm != null && createGenreForm.name() != null) {
-            GenreEntity genreEntity = new GenreEntity(createGenreForm.name());
+    public void createGenre(GenreDTO genreDTO) {
+        if (genreDTO != null && genreDTO.getName() != null) {
+            GenreEntity genreEntity = new GenreEntity(genreDTO.getName());
             genreRepository.save(genreEntity);
         }
     }
@@ -58,13 +58,13 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     @Caching(evict = {
-            @CacheEvict(value = "genre", key = "#updateGenreForm.id()"),
+            @CacheEvict(value = "genre", key = "#genreDTO.getId()"),
             @CacheEvict(value = "all_genres", allEntries = true)
     })
-    public void update(UpdateGenreForm updateGenreForm) {
-        GenreEntity genreEntity = genreRepository.findById(updateGenreForm.id())
-                .orElseThrow(() -> new ResourceNotFoundException("genre with id " + updateGenreForm.id() + " not found"));
-        genreEntity.setName(updateGenreForm.name());
+    public void update(GenreDTO genreDTO) {
+        GenreEntity genreEntity = genreRepository.findById(genreDTO.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("genre with id " + genreDTO.getId() + " not found"));
+        genreEntity.setName(genreDTO.getName());
         genreRepository.save(genreEntity);
     }
 

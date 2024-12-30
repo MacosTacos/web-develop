@@ -20,7 +20,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="author : ${authors}">
+    <tr th:each="author : ${authors.authors}">
       <td th:text="${author.id}">1</td>
       <td th:text="${author.name}">Имя автора</td>
       <td th:text="${author.description}">Описание</td>
